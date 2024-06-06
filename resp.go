@@ -24,7 +24,7 @@ type Value struct {
 	arr  []Value
 }
 
-// TODO: Maybe Resp is better then RespMessage
+// TODO: Maybe RespMessage is better than Resp
 type RespMessage struct {
 	reader *bufio.Reader
 }
@@ -167,6 +167,8 @@ func (v Value) Marshal() []byte {
 		return v.marshalError()
 	case "array":
 		return v.marshalArray()
+	case "null" :
+		return v.marshalNull()
 	default:
 		return resp
 	}

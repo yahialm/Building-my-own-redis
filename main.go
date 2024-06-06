@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net"
+	"strings"
 )
 
 const (
@@ -36,10 +37,29 @@ func main() {
 			return
 		}
 
-		_ = value
+		if value.typ != "array" {
+			fmt.Println("Invalid req, array expected")
+			continue // next iter, we can't stop the loop
+		}
 
-		// Writing "+OK\r\n" to the connection
+		if len(value.arr) == 0 {
+			fmt.Println("Invalid req, array expected with more than 0 args")
+			continue
+		}
+
+		command := strings.ToUpper(value.arr[0].bulk)
+		args := value.arr[1:]
+
 		writer := NewWriter(conn)
-		writer.Write(Value{typ: "string", str: "OK"})
+
+		handler, ok := Handlers[command]
+		if !ok {
+			fmt.Println("Invalid command: ", command)
+			writer.Write(Value{typ: "string", str: ""})
+			continue
+		}
+
+		result := handler(args) // ping(args []Value)
+		writer.Write(result)	
 	}
 }
