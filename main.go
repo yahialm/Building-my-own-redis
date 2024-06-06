@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	PORT = ":6379"
+	PORT       = ":6379"
 	CONN_PROTO = "tcp"
 )
 
@@ -29,7 +29,7 @@ func main() {
 	defer conn.Close()
 
 	for {
-		resp := NewRsep(conn)
+		resp := NewResp(conn)
 		value, err := resp.Read()
 		if err != nil {
 			fmt.Println(err)

@@ -29,7 +29,7 @@ type RespMessage struct {
 	reader *bufio.Reader
 }
 
-func NewRsep(rd io.Reader) *RespMessage {
+func NewResp(rd io.Reader) *RespMessage {
 	return &RespMessage{reader: bufio.NewReader(rd)}
 }
 
