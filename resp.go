@@ -19,7 +19,7 @@ const (
 type Value struct {
 	typ  string
 	str  string
-	num  int
+	// num  int
 	bulk string
 	arr  []Value
 }
