@@ -6,6 +6,7 @@ var Handlers = map[string]func([]Value) Value{
 	"PING": ping,
 	"GET":  get,
 	"SET":  set,
+	"DEL": rm,
 	"HSET": hset,
 	"HGET": hget, 
 }
@@ -55,6 +56,23 @@ func get(args []Value) Value {
 	}
 
 	return Value{typ: "bulk", bulk: value}
+}
+
+func rm(args []Value) Value {
+	keys_len := len(args)
+
+	if keys_len == 0 {
+		return Value{typ: "ERROR", str: "Expected at least one argument for DEL command"}
+	}
+
+	// Lock
+	SETsMu.Lock()
+	for k:=0; k<keys_len; k++ {
+		delete(SETs, args[k].bulk)
+	}
+	SETsMu.Unlock()
+
+	return Value{typ: "string", str: "OK"}
 }
 
 func hset(args []Value) Value {
