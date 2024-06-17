@@ -1,6 +1,9 @@
 package main
 
-import "sync"
+import (
+	"fmt"
+	"sync"
+)
 
 var Handlers = map[string]func([]Value) Value{
 	"PING": ping,
@@ -65,14 +68,18 @@ func rm(args []Value) Value {
 		return Value{typ: "ERROR", str: "Expected at least one argument for DEL command"}
 	}
 
+	count := 0
 	// Lock
 	SETsMu.Lock()
 	for k:=0; k<keys_len; k++ {
-		delete(SETs, args[k].bulk)
+		if _, ok := SETs[args[0].bulk]; ok {
+			delete(SETs, args[k].bulk)
+			count++
+		}
 	}
 	SETsMu.Unlock()
 
-	return Value{typ: "string", str: "OK"}
+	return Value{typ: "string", str: fmt.Sprint(count)}
 }
 
 func hset(args []Value) Value {

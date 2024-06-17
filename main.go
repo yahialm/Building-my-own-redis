@@ -63,6 +63,7 @@ func main() {
 		if !ok {
 			fmt.Println("Invalid command: ", command)
 			writer.Write(Value{typ: "string", str: ""})
+			// writer.Write(Value{typ: "string", str: command + " is an invalid command"})
 			continue
 		}
 		
