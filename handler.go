@@ -11,7 +11,8 @@ var Handlers = map[string]func([]Value) Value{
 	"SET":  set,
 	"DEL": rm,
 	"HSET": hset,
-	"HGET": hget, 
+	"HGET": hget,
+	"HGETALL": hgetall,
 }
 
 // GET & SET command maps
@@ -123,4 +124,27 @@ func hget(args []Value) Value {
 	}
 
 	return Value{typ: "bulk", bulk: value}
+}
+
+func hgetall(args []Value) Value {
+	if len(args) != 1 {
+		return Value{typ: "ERROR", str: "Expected only 1 argument for HGETALL command"}
+	}
+
+	hash := args[0].bulk
+
+	HSETsMux.RLock()
+	_, ok := HSETs[hash]
+
+	if !ok {
+		return Value{typ: "null"}
+	}
+	res := Value{}
+	res.typ = "array"
+	for key := range(HSETs[hash]) {
+		v := Value{typ: "bulk", bulk: HSETs[hash][key]}
+		res.arr = append(res.arr, v)
+	}
+
+	return res
 }
