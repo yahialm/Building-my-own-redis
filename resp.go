@@ -202,7 +202,8 @@ func (v Value) marshalArray() []byte {
 	bytes = append(bytes, '\r', '\n')
 	for i:=0; i<arr_len; i++ {
 		bytes = append(bytes, v.arr[i].Marshal()...)
-		bytes = append(bytes, '\r', '\n')
+		// bytes = append(bytes, '\r', '\n') --> fix the HGETALL command problem
+		// Error: Protocol error, got "\r" as reply type byte
 	}
 	return bytes
 }

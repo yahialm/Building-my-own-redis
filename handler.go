@@ -139,12 +139,14 @@ func hgetall(args []Value) Value {
 	if !ok {
 		return Value{typ: "null"}
 	}
-	res := Value{}
-	res.typ = "array"
+	// res := Value{}
+	// res.typ = "array"
+	var arr []Value 
 	for key := range(HSETs[hash]) {
 		v := Value{typ: "bulk", bulk: HSETs[hash][key]}
-		res.arr = append(res.arr, v)
+		arr = append(arr, v)
 	}
+	HSETsMux.RUnlock()
 
-	return res
+	return Value{typ:"array", arr: arr}
 }
